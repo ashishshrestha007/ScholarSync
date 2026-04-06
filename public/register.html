@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Student Production System</title>
+    <title>Register - ScholarSync</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -86,7 +86,7 @@
         <div class="auth-card">
             <div class="auth-header">
                 <h1>Create Account</h1>
-                <p>Join the Student Production System</p>
+                <p>Join ScholarSync</p>
             </div>
             
             <form id="register-form">
@@ -183,25 +183,40 @@
             
             let hasError = false;
             
-            if (!name) { document.getElementById('name-error').style.display = 'block'; hasError = true; } 
-            else document.getElementById('name-error').style.display = 'none';
+            const nameRegex = /^[A-Za-z\s]+$/;
+            if (!name || !nameRegex.test(name)) { 
+                document.getElementById('name-error').textContent = 'Please enter a valid real name (letters only).';
+                document.getElementById('name-error').style.display = 'block'; 
+                hasError = true; 
+            } else {
+                document.getElementById('name-error').style.display = 'none';
+            }
 
             // Email format validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!email || !emailRegex.test(email)) { 
-                document.getElementById('email-error').style.display = 'block'; hasError = true; 
+            const emailRegex = /^[a-z0-9._%+-]+@(gmail\.com|yahoo\.com)$/;
+            const emailLocal = email.split('@')[0] || '';
+            const isLocalOnlyNumbers = /^[0-9]+$/.test(emailLocal);
+
+            if (!email || !emailRegex.test(email) || isLocalOnlyNumbers) { 
+                document.getElementById('email-error').textContent = 'Valid @gmail.com or @yahoo.com required (username cannot be only numbers).';
+                document.getElementById('email-error').style.display = 'block'; 
+                hasError = true; 
             } else {
                 document.getElementById('email-error').style.display = 'none';
             }
             
-            if (!password) { 
-                document.getElementById('password-error').style.display = 'block'; hasError = true; 
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!password || !passwordRegex.test(password)) { 
+                document.getElementById('password-error').textContent = 'Password must be at least 8 chars with 1 uppercase and 1 number.';
+                document.getElementById('password-error').style.display = 'block'; 
+                hasError = true; 
             } else {
                 document.getElementById('password-error').style.display = 'none';
             }
 
             if (password !== confirm || !confirm) {
-                document.getElementById('confirm-error').style.display = 'block'; hasError = true;
+                document.getElementById('confirm-error').style.display = 'block'; 
+                hasError = true;
             } else {
                 document.getElementById('confirm-error').style.display = 'none';
             }

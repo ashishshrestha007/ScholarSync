@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ProStudent Suite | Smart Productivity</title>
+    <title>ScholarSync | Smart Productivity</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -204,6 +204,15 @@
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
+        .form-group { margin-bottom: 1.3rem; }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
         .glass-input,
         .flatpickr-input {
             background: rgba(0, 0, 0, 0.5);
@@ -362,11 +371,19 @@
             border: 1px solid var(--border-glass);
         }
 
+        .calendar-day h4 {
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 0.4rem;
+        }
+
         .cal-task-item {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             background: rgba(0, 0, 0, 0.4);
-            padding: 0.2rem 0.4rem;
-            margin-bottom: 0.25rem;
+            padding: 0.4rem 0.6rem;
+            margin-bottom: 0.5rem;
             border-left: 2px solid var(--accent-primary);
             border-radius: 6px;
             white-space: nowrap;
@@ -403,7 +420,7 @@
 <body>
     <div class="app-container">
         <nav class="sidebar">
-            <div class="logo"><i class="fa-solid fa-graduation-cap"></i><span>ProStudent</span></div>
+            <div class="logo"><i class="fa-solid fa-graduation-cap"></i><span>ScholarSync</span></div>
             <div class="user-profile-sm"
                 style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
                 <div style="font-weight: 600;" id="sidebar-user-name">Learner</div>
@@ -415,7 +432,6 @@
                 <li data-tab="timer"><i class="fa-solid fa-clock"></i> Study Timer</li>
                 <li data-tab="goals"><i class="fa-solid fa-book"></i> Notebook</li>
                 <li data-tab="calendar"><i class="fa-solid fa-calendar-days"></i> Calendar View</li>
-                <li data-tab="stats"><i class="fa-solid fa-chart-line"></i> Analytics</li>
                 <li onclick="window.open('https://github.com', '_blank')"><i class="fa-solid fa-code-branch"></i> GitHub Link</li>
             </ul>
             <div style="margin-top: auto;"><button class="btn btn-secondary"
@@ -454,19 +470,10 @@
                             <p id="dash-pending">0</p>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
-                        <div class="stat-info">
-                            <h3>Hours Today</h3>
-                            <p id="dash-study-hours">0</p>
-                        </div>
-                    </div>
+                            <!-- Mins today card removed -->
                 </div>
                 <div class="dashboard-widgets">
-                    <div class="widget">
-                        <h2>Weekly Trend</h2>
-                        <div style="height: 260px;"><canvas id="mini-chart"></canvas></div>
-                    </div>
+                    <!-- Chart Widget Removed -->
                     <div class="widget">
                         <h2>Today's Priorities</h2>
                         <ul id="dash-todays-tasks" style="list-style: none;">
@@ -502,13 +509,7 @@
                                         <option value="12">12 PM</option><option value="13">01 PM</option><option value="14">02 PM</option><option value="15">03 PM</option>
                                         <option value="16">04 PM</option><option value="17">05 PM</option><option value="18">06 PM</option><option value="19">07 PM</option>
                                         <option value="20">08 PM</option><option value="21">09 PM</option><option value="22">10 PM</option><option value="23">11 PM</option>
-                                    </select><select id="task-start-min" class="glass-input">
-                                        <option value="">Min</option>
-                                        <option value="00">00</option>
-                                        <option value="15">15</option>
-                                        <option value="30">30</option>
-                                        <option value="45">45</option>
-                                    </select></div>
+                                    </select><input type="number" id="task-start-min" class="glass-input" placeholder="Min" min="0" max="59" style="width: 70px;"></div>
                             </div>
                             <div style="flex:1;"><label>End Time</label>
                                 <div style="display:flex; gap:0.5rem;"><select id="task-end-hour" class="glass-input">
@@ -519,13 +520,7 @@
                                         <option value="12">12 PM</option><option value="13">01 PM</option><option value="14">02 PM</option><option value="15">03 PM</option>
                                         <option value="16">04 PM</option><option value="17">05 PM</option><option value="18">06 PM</option><option value="19">07 PM</option>
                                         <option value="20">08 PM</option><option value="21">09 PM</option><option value="22">10 PM</option><option value="23">11 PM</option>
-                                    </select><select id="task-end-min" class="glass-input">
-                                        <option value="">Min</option>
-                                        <option value="00">00</option>
-                                        <option value="15">15</option>
-                                        <option value="30">30</option>
-                                        <option value="45">45</option>
-                                    </select></div>
+                                    </select><input type="number" id="task-end-min" class="glass-input" placeholder="Min" min="0" max="59" style="width: 70px;"></div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary" style="width:100%;"><i
@@ -571,20 +566,7 @@
                             style="margin-top: 0.8rem; font-size: 0.85rem; color: var(--accent-primary);">Ready to focus
                         </div>
                     </div>
-                    <div class="widget" style="flex:1; max-width: 400px;">
-                        <h2>📘 Manual Study Log</h2>
-                        <form id="manual-log-form">
-                            <input type="text" id="manual-subject" class="glass-input" placeholder="Subject" required
-                                style="margin-bottom: 0.8rem;">
-                            <input type="number" id="manual-minutes" class="glass-input" placeholder="Minutes spent"
-                                required style="margin-bottom: 1rem;">
-                            <button type="submit" class="btn btn-primary" style="width:100%;"><i
-                                    class="fa-regular fa-clock"></i> Log Session</button>
-                        </form>
-                        <div style="margin-top: 1rem;">
-                            <p><i class="fa-regular fa-note-sticky"></i> Recent logs appear in Analytics</p>
-                        </div>
-                    </div>
+                    <!-- Manual Study Log removed -->
                 </div>
             </section>
 
@@ -593,7 +575,7 @@
                 <div class="widget">
                     <h2>📓 Q&A Notebook</h2>
                     <input type="text" id="note-question" class="glass-input" placeholder="Question / Topic"
-                        style="margin-bottom: 0.6rem;">
+                        style="margin-bottom: 1.3rem;">
                     <textarea id="note-answer" class="glass-input" rows="3"
                         placeholder="Your notes / answer..."></textarea>
                     <button class="btn btn-primary" style="margin-top: 1rem; width:100%;"
@@ -610,10 +592,7 @@
                 <h2>🗓️ Weekly Planner</h2>
                 <div class="calendar-grid" id="calendar-grid-container"></div>
             </section>
-            <section id="stats" class="view-section">
-                <h2>📊 Study Analytics</h2>
-                <div class="widget"><canvas id="full-analytics-chart" style="height: 380px; width:100%;"></canvas></div>
-            </section>
+            <!-- Stats Screen Removed -->
         </main>
     </div>
     <audio id="alarm-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"
@@ -654,7 +633,7 @@
             if (document.getElementById("tasks").classList.contains("active")) loadTaskView(currentTaskFilter);
             if (document.getElementById("calendar").classList.contains("active")) renderCalendar();
             renderNotebook();
-            refreshCharts();
+            // refreshCharts();
         }
 
         async function refreshDashboardStats() {
@@ -663,7 +642,6 @@
                 document.getElementById("dash-total").innerText = data.total;
                 document.getElementById("dash-completed").innerText = data.completed;
                 document.getElementById("dash-pending").innerText = data.pending;
-                document.getElementById("dash-study-hours").innerText = data.studyHoursToday;
             }
             
             let todayStr = new Date().toISOString().split('T')[0];
@@ -688,6 +666,10 @@
             } else formDiv.style.display = "none";
         }
 
+        document.getElementById("task-title")?.addEventListener("input", function(e) {
+            this.value = this.value.replace(/[^A-Za-z\s]/g, '');
+        });
+
         document.getElementById("new-task-form")?.addEventListener("submit", async (e) => {
             e.preventDefault();
             let title = document.getElementById("task-title").value.trim();
@@ -698,8 +680,8 @@
             let startMin = document.getElementById("task-start-min").value;
             let endHour = document.getElementById("task-end-hour").value;
             let endMin = document.getElementById("task-end-min").value;
-            let startTime = (startHour && startMin) ? `${startHour}:${startMin}` : null;
-            let endTime = (endHour && endMin) ? `${endHour}:${endMin}` : null;
+            let startTime = (startHour && startMin) ? `${startHour}:${startMin.padStart(2, '0')}` : null;
+            let endTime = (endHour && endMin) ? `${endHour}:${endMin.padStart(2, '0')}` : null;
             
             if (editTaskId) {
                 await apiFetch(`/tasks/${editTaskId}`, { method: 'PUT', body: JSON.stringify({ title, description: desc, due_date: dueDate, start_time: startTime, end_time: endTime }) });
@@ -801,14 +783,14 @@
             timerInterval = setInterval(async () => {
                 if (timerSeconds <= 1) {
                     clearInterval(timerInterval); timerActive = false;
-                    document.getElementById("alarm-sound").play();
-                    let subject = document.getElementById("timer-subject").value.trim();
-                    if (subject && currentTimerMinutes > 0) {
+                    document.getElementById("alarm-sound").play().catch(e => console.warn('Audio play blocked:', e));
+                    let subject = document.getElementById("timer-subject").value.trim() || 'Focus Session';
+                    if (currentTimerMinutes > 0) {
                         await apiFetch('/study', { method: 'POST', body: JSON.stringify({ subject: subject, duration_minutes: currentTimerMinutes }) });
                         document.getElementById("timer-status-msg").innerHTML = "✅ Session logged! Great focus.";
                         await fetchAllData();
                     } else document.getElementById("timer-status-msg").innerHTML = "⏰ Time's up!";
-                    resetTimer(false);
+                    setTimeout(() => resetTimer(false), 3000);
                 } else { timerSeconds--; updateTimerUI(); }
             }, 1000);
         }
@@ -818,18 +800,7 @@
         document.getElementById("timer-pause-btn").onclick = pauseTimer;
         document.getElementById("timer-reset-btn").onclick = () => resetTimer(true);
 
-        // Manual study log
-        document.getElementById("manual-log-form")?.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            let subject = document.getElementById("manual-subject").value.trim();
-            let minutes = parseInt(document.getElementById("manual-minutes").value);
-            if (!subject || isNaN(minutes) || minutes <= 0) return alert("Enter valid subject and minutes");
-            await apiFetch('/study', { method: 'POST', body: JSON.stringify({ subject: subject, duration_minutes: minutes }) });
-            document.getElementById("manual-subject").value = "";
-            document.getElementById("manual-minutes").value = "";
-            alert(`📚 Logged ${minutes} min for ${subject}`);
-            await fetchAllData();
-        });
+        // Manual study log removed
 
         // Notebook
         async function addNotebookEntry() {
@@ -872,27 +843,7 @@
             }
         }
 
-        // Charts
-        async function refreshCharts() {
-            const data = await apiFetch('/analytics');
-            if(!data) return;
-            
-            let labels = data.map(d => new Date(d.date).toLocaleDateString(undefined, {month:'short', day:'numeric'}));
-            let values = data.map(d => d.minutes);
-
-            let ctxMain = document.getElementById('full-analytics-chart')?.getContext('2d');
-            if (ctxMain && window.mainChartAnalytic) window.mainChartAnalytic.destroy();
-            if (ctxMain) {
-                window.mainChartAnalytic = new Chart(ctxMain, { type: 'line', data: { labels: labels, datasets: [{ label: 'Daily Study (minutes)', data: values, borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true } });
-            }
-            let miniCtx = document.getElementById('mini-chart')?.getContext('2d');
-            if (miniCtx && window.miniBarChart) window.miniBarChart.destroy();
-            if (miniCtx) {
-                let last7labels = labels.slice(-7);
-                let last7values = values.slice(-7);
-                window.miniBarChart = new Chart(miniCtx, { type: 'bar', data: { labels: last7labels, datasets: [{ label: 'Mins', data: last7values, backgroundColor: '#818cf8' }] }, options: { responsive: true } });
-            }
-        }
+        // Charts Removed
 
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
         function logoutSystem() { auth.logout(); }
@@ -918,7 +869,7 @@
                     li.classList.add("active");
                     if (tab === "tasks") loadTaskView(currentTaskFilter);
                     if (tab === "calendar") renderCalendar();
-                    if (tab === "stats") refreshCharts();
+                    // if (tab === "stats") refreshCharts();
                 });
             });
         };

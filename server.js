@@ -82,10 +82,24 @@ app.post('/api/tasks', authenticateToken, (req, res) => {
 });
 
 app.put('/api/tasks/:id', authenticateToken, (req, res) => {
-    // Allows updating status or text
-    const { title, description, status } = req.body;
-    db.run(`UPDATE tasks SET title = COALESCE(?, title), description = COALESCE(?, description), status = COALESCE(?, status) WHERE id = ? AND user_id = ?`,
-        [title, description, status, req.params.id, req.user.id], function(err) {
+    const { title, description, status, due_date, start_time, end_time } = req.body;
+    
+    let updates = [];
+    let params = [];
+    
+    if (title !== undefined) { updates.push("title = ?"); params.push(title); }
+    if (description !== undefined) { updates.push("description = ?"); params.push(description); }
+    if (status !== undefined) { updates.push("status = ?"); params.push(status); }
+    if (due_date !== undefined) { updates.push("due_date = ?"); params.push(due_date); }
+    if (start_time !== undefined) { updates.push("start_time = ?"); params.push(start_time); }
+    if (end_time !== undefined) { updates.push("end_time = ?"); params.push(end_time); }
+    
+    if (updates.length === 0) return res.json({ updated: 0 });
+    
+    params.push(req.params.id, req.user.id);
+    const query = `UPDATE tasks SET ${updates.join(', ')} WHERE id = ? AND user_id = ?`;
+    
+    db.run(query, params, function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ updated: this.changes });
     });
@@ -148,7 +162,7 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
         db.get(`SELECT COUNT(*) as c FROM tasks WHERE user_id = ? AND status = 'completed'`, [req.user.id], (err, r) => { stats.completed = r?r.c:0;
             db.get(`SELECT COUNT(*) as c FROM tasks WHERE user_id = ? AND status != 'completed'`, [req.user.id], (err, r) => { stats.pending = r?r.c:0;
                 db.get(`SELECT SUM(duration_minutes) as m FROM study_sessions WHERE user_id = ? AND date = date('now', 'localtime')`, [req.user.id], (err, r) => {
-                    stats.studyHoursToday = r && r.m ? (r.m / 60).toFixed(1) : 0;
+                    stats.studyHoursToday = r && r.m ? r.m : 0;
                     res.json(stats);
                 });
             });

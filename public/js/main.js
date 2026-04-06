@@ -186,10 +186,16 @@ const taskManager = {
     },
 
     async editTask(id, currentTitle) {
-        const newTitle = prompt("Edit Task Title:", currentTitle);
-        if (!newTitle || newTitle.trim() === "") return;
+        let newTitle = prompt("Edit Task Title (letters only):", currentTitle);
+        if (!newTitle) return;
         
-        await apiFetch(`/tasks/${id}`, { method: 'PUT', body: JSON.stringify({ title: newTitle.trim() }) });
+        newTitle = newTitle.replace(/[^A-Za-z\s]/g, '').trim();
+        if (newTitle === "") {
+            alert('Title must contain only letters and spaces.');
+            return;
+        }
+        
+        await apiFetch(`/tasks/${id}`, { method: 'PUT', body: JSON.stringify({ title: newTitle }) });
         this.loadTasks(this.currentFilter);
     },
 
@@ -199,6 +205,10 @@ const taskManager = {
         this.loadTasks(this.currentFilter);
     }
 };
+
+document.getElementById('task-title')?.addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^A-Za-z\s]/g, '');
+});
 
 document.getElementById('new-task-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
